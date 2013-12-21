@@ -15,7 +15,7 @@ parse-cases = (crawler, $) ->
 parser = (crawler) ->
   data = []
   ending = ->
-    data |> JSON.stringify |> console.log
+    data |> JSON.stringify |> fs.writeFileSync output_file, _
   cb = (err, result, $) !->
     add-index = !->
       (i) <-! $ \.SecondTable .first!.next!.children!.each
@@ -27,7 +27,6 @@ parser = (crawler) ->
       ($ this).children \td .each (i) !->
         d[output_fields[i]] = ($ this).text!
       data.push d
-      #data |> JSON.stringify |> console.log
       d.title |> console.log
 
     crawl-next-page = !->
