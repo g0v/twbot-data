@@ -6,33 +6,42 @@ count = 0
 data_dir = '..'
 cache_dir = 'cache'
 output_file = data_dir + '/index.json'
-output_fields = <[ id title uri category ann_type type administrasion times start_from end_at ]>
-uri = 'http://ppp.pcc.gov.tw/PPP.Website/Case/AnnounceView.aspx'
+output_fields = <[ id href category ann_type type administrasion times start_from end_at ]>
+base_uri = 'http://ppp.pcc.gov.tw/PPP.Website/Case'
+uri = base_uri + '/AnnounceView.aspx'
+
+parse-cases = (crawler, $) ->
 
 parser = (crawler) ->
   cb = (err, result, $) !->
-    do
-      (i) <-! $ \.SecondTable .first! .next! .children \tr .each
-      if $ this .children \th
+    add-index = !->
+      (i, d) <-! $ \.SecondTable .first!.next!.children!.each
+      if ($ this).children \th .size > 0
         return
       data = {}
-      (i) <-! $ this .children \td .each
-      data[output_fields[i]] = $ this .text!
-      data |> JSON.stringy |> fs.appendFileSync output_file _
+      data.uri = base_uri + '/' + ($ this).children \td .first!.next!.children \a .attr \href
+      data.title = ($ this).children \td .first!.next!.text!
+      ($ this).children \td .each (i) !->
+        data[output_fields[i]] = ($ this).text!
+      output_file |> console.log
+      data |> JSON.stringify |> fs.appendFileSync output_file, _
+      #data |> JSON.stringify |> console.log
+      data.title |> console.log
 
-    $ 'body' .html! |> fs.writeFileSync cache_dir + '/index' + count + '.html' _
-    ++count
+    crawl-next-page = !->
+      postarg = {
+        __EVENTTARGET: 'ctl00$MainPlaceHolder$PagerList1$btnNext'
+        __VIEWSTATE: $('#__VIEWSTATE').val!
+        __EVENTVALIDATION: $('#__EVENTVALIDATION').val!
+      }
+      crawler.queue [{
+        uri: uri
+        method: \post
+        form: postarg
+        callback: cb
+      }]
 
-    postarg = {
-      __EVENTTARGET: 'ctl00$MainPlaceHolder$PagerList1$btnNext'
-      __VIEWSTATE: $('#__VIEWSTATE').val!
-      __EVENTVALIDATION: $('#__EVENTVALIDATION').val!
-    }
-    crawler.queue [{
-      uri: uri
-      method: \post
-      form: postarg
-      callback: cb
-    }]
+    add-index!
+    #crawl-next-page
 
 exports.parser = parser
