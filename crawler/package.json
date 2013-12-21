@@ -1,0 +1,20 @@
+{
+  "name": "twbot-data",
+  "version": "0.1.0",
+  "author": "Pomin Wu <pomin5@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pm5/twbot-data.git"
+  },
+  "dependencies" : {
+    "crawler": "0.2.5"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10.x",
+    "npm": "1.2.x"
+  },
+  "scripts": {
+    "start": "node crawler.js"
+  }
+}
