@@ -23,8 +23,7 @@ parser = (crawler) ->
       data.title = ($ this).children \td .first!.next!.text!
       ($ this).children \td .each (i) !->
         data[output_fields[i]] = ($ this).text!
-      output_file |> console.log
-      data |> JSON.stringify |> fs.appendFileSync output_file, _
+      data |> JSON.stringify |> (d) -> d + ',' |> fs.appendFileSync output_file, _
       #data |> JSON.stringify |> console.log
       data.title |> console.log
 
@@ -42,6 +41,6 @@ parser = (crawler) ->
       }]
 
     add-index!
-    #crawl-next-page
+    crawl-next-page!
 
 exports.parser = parser
