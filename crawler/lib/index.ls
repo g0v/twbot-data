@@ -13,19 +13,22 @@ uri = base_uri + '/AnnounceView.aspx'
 parse-cases = (crawler, $) ->
 
 parser = (crawler) ->
+  data = []
+  ending = ->
+    data |> JSON.stringify |> console.log
   cb = (err, result, $) !->
     add-index = !->
-      (i, d) <-! $ \.SecondTable .first!.next!.children!.each
-      if ($ this).children \th .size > 0
-        return
-      data = {}
-      data.uri = base_uri + '/' + ($ this).children \td .first!.next!.children \a .attr \href
-      data.title = ($ this).children \td .first!.next!.text!
+      (i) <-! $ \.SecondTable .first!.next!.children!.each
+      return if ($ this).children \th .size > 0
+      d = {}
+      d.uri = base_uri + '/' + ($ this).children \td .first!.next!.children \a .attr \href
+      d.title = ($ this).children \td .first!.next!.text!
+      return unless d.title
       ($ this).children \td .each (i) !->
-        data[output_fields[i]] = ($ this).text!
-      data |> JSON.stringify |> (d) -> d + ',' |> fs.appendFileSync output_file, _
+        d[output_fields[i]] = ($ this).text!
+      data.push d
       #data |> JSON.stringify |> console.log
-      data.title |> console.log
+      d.title |> console.log
 
     crawl-next-page = !->
       postarg = {
@@ -41,6 +44,9 @@ parser = (crawler) ->
       }]
 
     add-index!
+    if $ \#ctl00_MainPlaceHolder_PagerList1_btnNext .attr \disabled
+      ending!
+      return
     crawl-next-page!
 
 exports.parser = parser
