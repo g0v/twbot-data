@@ -9,4 +9,6 @@ repository:
   url: 'git://github.com/g0v/twbot-data.git'
 dependencies:
   crawler: ''
+  request: ''
+  cheerio: ''
 

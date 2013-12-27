@@ -3,8 +3,8 @@ var cheerio = require('cheerio');
 var http = require('http');
 var fs = require('fs');
 
-var areas = JSON.parse(fs.readFileSync('section.json', 'utf-8')).area;
-var indextable = JSON.parse(fs.readFileSync('../index.json', 'utf-8'));
+var areas = JSON.parse(fs.readFileSync('crawler/section.json', 'utf-8')).area;
+var indextable = JSON.parse(fs.readFileSync('index.json', 'utf-8'));
 var addressbook=new Array();
 
 function findSections(parentstring){
