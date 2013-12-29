@@ -6,7 +6,10 @@ var landno = require('./lib/landno');
 
 var areas = JSON.parse(fs.readFileSync('crawler/section.json', 'utf-8')).area;
 var indextable = JSON.parse(fs.readFileSync('index.json', 'utf-8'));
-var addressbook=new Array();
+var addressbook={
+  type: "FeatureCollection",
+  features: []
+};
 
 function findSections(parentstring){
 	keys= Object.keys(areas);
@@ -59,7 +62,7 @@ function ParseMapAddress(testurl, testID){
             console.log(no);
             landno.coordinates(no, function (err, coor) {
               if (! err && coor != null && coor.length == 2) {
-                addressbook.push({
+                addressbook.features.push({
                   type: 'Feature',
                   properties: {
                     'ID': testID,
