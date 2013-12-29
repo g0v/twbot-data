@@ -84,6 +84,7 @@ function ParseMapAddress(testurl, testID){
   });	  
 }
 
+fs.writeFileSync('addressbook.json', '{"type":"FeatureCollection","features":[', 'UTF-8', {flags:'w+'});
 for(var i=0;i<indextable.length;i++)
 {
 	var testurl=indextable[i].uri;
@@ -93,3 +94,4 @@ for(var i=0;i<indextable.length;i++)
 	var targeturl='http://ppp.pcc.gov.tw/PPP.Website/Case/LoadUserControl.aspx?Path=./Controls/Case/govland/ViewHistory.ascx&Params=AnnounceNo%3A'+targetID;
 	ParseMapAddress(targeturl, targetID);
 }
+fs.writeFileSync('addressbook.json', ']}', 'UTF-8', {flags:'w+'});
