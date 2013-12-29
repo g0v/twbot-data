@@ -3,7 +3,7 @@ api_url = \http://jimmyhub.net:9192/?address=
 
 request = require \request
 fs = require \fs
-{ map, filter, join, keys, split, unique } = require \prelude-ls
+{ map, filter, join, keys, values, split, unique } = require \prelude-ls
 
 cache = {}
 
@@ -21,6 +21,12 @@ module.exports.coordinates = coordinates = (addr, cb) ->
   cb null, cache[addr]
 
 landno-data = fs.readFileSync __dirname + \/landno.json |> JSON.parse
+
+module.exports.city-pattern = city-pattern = ->
+  landno-data.city
+  |> values
+  |> join '|'
+  |> (s) -> \( + s + \)
 
 module.exports.area-pattern = area-pattern = (city) ->
   landno-data.area
