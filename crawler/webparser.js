@@ -51,7 +51,30 @@ function ParseMapAddress(testurl, testID){
 		      var startIdx=findSections(target);
 		      var address=target.substr(startIdx);
 		      console.log('ParseMapAddress',address); 
-			  addressbook.push({'ID':testID, 'MapAddress':address});
+        var r;
+        if ((r = new RegExp(landno.cityPattern()).exec(address)) != null) {
+          var city = r[1];
+          if ((r = landno.parseLandno(city, address)).length != 0) {
+            var no = r[0].join('');
+            console.log(no);
+            landno.coordinates(no, function (err, coor) {
+              if (! err && coor != null && coor.length == 2) {
+                addressbook.push({
+                  type: 'Feature',
+                  properties: {
+                    'ID': testID,
+                    'MapAddress': address
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: coor
+                  }
+                });
+              }
+            })
+          }
+        }
+
 			  fs.writeFileSync('addressbook.json', JSON.stringify(addressbook), "UTF-8", {'flags': 'w+'});
 			}  
 		  });	 
